@@ -29,8 +29,6 @@ A sleek and efficient Todo Dashboard built with ⚛️ React, ⚡ Vite, and 🛠
    ```bash
    npm run dev
 
-
-
 4. **Build the project for production**  
    ```bash
    npm run build
