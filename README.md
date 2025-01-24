@@ -4,6 +4,8 @@ A sleek and efficient Todo Dashboard built with ⚛️ React, ⚡ Vite, and 🛠
 ## 🖼️ Screenshot  
 ![Screenshot](src/Screenshot%202025-01-24%20175017.png) 
 
+![Screenshot](src/Screenshot%202025-01-24%20175036.png)  
+
 ## 🚀 Features  
 - **Add Tasks**: Quickly create new tasks.  
 - **Edit Tasks**: Update task details with ease.  
