@@ -19,148 +19,89 @@ import {
   ChevronRight,
   Edit3,
 } from 'lucide-react';
-
-function CalendarComponent({ darkMode }: { darkMode: boolean }) {
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [showCalendar, setShowCalendar] = useState(false);
-
-  const daysInMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0).getDate();
-  const firstDayOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1).getDay();
-  
-  const monthNames = ["January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
-
-  const days = [];
-  for (let i = 0; i < firstDayOfMonth; i++) {
-    days.push(null);
-  }
-  for (let i = 1; i <= daysInMonth; i++) {
-    days.push(i);
-  }
-
-  const prevMonth = () => {
-    setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1));
-  };
-
-  const nextMonth = () => {
-    setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1));
-  };
-
-  return (
-    <div className="relative">
-      <button 
-        onClick={() => setShowCalendar(!showCalendar)}
-        className={`w-full p-2 rounded-lg flex items-center justify-between ${
-          darkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-gray-100'
-        }`}
-      >
-        <span>
-          {selectedDate.toLocaleDateString('en-US', { 
-            weekday: 'short',
-            month: 'short',
-            day: 'numeric'
-          })}
-        </span>
-        <Edit3 className="w-4 h-4" />
-      </button>
-
-      {showCalendar && (
-        <div className={`absolute left-0 mt-2 p-4 rounded-lg shadow-lg z-50 w-[300px] ${
-          darkMode ? 'bg-gray-800' : 'bg-white'
-        }`}>
-          <div className="flex justify-between items-center mb-4">
-            <button onClick={prevMonth} className={`p-1 rounded ${
-              darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-            }`}>
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <span className="font-medium">
-              {monthNames[selectedDate.getMonth()]} {selectedDate.getFullYear()}
-            </span>
-            <button onClick={nextMonth} className={`p-1 rounded ${
-              darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-            }`}>
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-
-          <div className="grid grid-cols-7 gap-1 text-center text-xs text-gray-400 mb-2">
-            <div>S</div>
-            <div>M</div>
-            <div>T</div>
-            <div>W</div>
-            <div>T</div>
-            <div>F</div>
-            <div>S</div>
-          </div>
-
-          <div className="grid grid-cols-7 gap-1">
-            {days.map((day, index) => (
-              <button
-                key={index}
-                className={`
-                  w-8 h-8 text-sm flex items-center justify-center rounded-full
-                  ${day === selectedDate.getDate() ? 'bg-green-600 text-white' : darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}
-                  ${!day && 'invisible'}
-                  ${day === new Date().getDate() && 
-                    selectedDate.getMonth() === new Date().getMonth() && 
-                    selectedDate.getFullYear() === new Date().getFullYear() 
-                    ? 'ring-1 ring-green-500' 
-                    : ''}
-                `}
-                onClick={() => day && setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), day))}
-              >
-                {day}
-              </button>
-            ))}
-          </div>
-
-          <div className="mt-4 flex justify-end gap-2">
-            <button 
-              className={`px-3 py-1 text-sm rounded ${
-                darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-              }`}
-              onClick={() => setShowCalendar(false)}
-            >
-              Clear
-            </button>
-            <button 
-              className={`px-3 py-1 text-sm rounded ${
-                darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-              }`}
-              onClick={() => setShowCalendar(false)}
-            >
-              Cancel
-            </button>
-            <button 
-              className="px-3 py-1 text-sm rounded bg-green-600 text-white hover:bg-green-700"
-              onClick={() => setShowCalendar(false)}
-            >
-              OK
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+import { Task } from './types';
+import AllTasks from './pages/AllTasks';
+import Important from './pages/Important';
+import Planned from './pages/Planned';
+import AssignedToMe from './pages/AssignedToMe';
+import CalendarComponent from './components/Calendar';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
-  const [tasks, setTasks] = useState([
-    { id: 1, text: 'Buy groceries', completed: false, important: false },
-    { id: 2, text: 'Finish project report', completed: false, important: true },
-    { id: 3, text: 'Call the bank', completed: false, important: false },
-    { id: 4, text: 'Schedule dentist appointment', completed: false, important: false },
-    { id: 5, text: 'Plan weekend trip', completed: false, important: false },
-    { id: 6, text: 'Read a book', completed: true, important: false },
-    { id: 7, text: 'Clean the house', completed: true, important: false },
-    { id: 8, text: 'Prepare presentation', completed: true, important: false },
-    { id: 9, text: 'Update blog', completed: true, important: false },
+  const [tasks, setTasks] = useState<Task[]>([
+    { 
+      id: 1, 
+      text: 'Buy groceries', 
+      completed: false, 
+      important: false,
+      createdAt: new Date().toISOString(),
+      dueDate: new Date(Date.now() + 86400000).toISOString(), // Tomorrow
+    },
+    { 
+      id: 2, 
+      text: 'Finish project report', 
+      completed: false, 
+      important: true,
+      createdAt: new Date().toISOString(),
+      assignedTo: 'me',
+    },
+    { 
+      id: 3, 
+      text: 'Call the bank', 
+      completed: false, 
+      important: false,
+      createdAt: new Date().toISOString(),
+    },
+    { 
+      id: 4, 
+      text: 'Schedule dentist appointment', 
+      completed: false, 
+      important: false,
+      createdAt: new Date().toISOString(),
+      dueDate: new Date(Date.now() + 172800000).toISOString(), // Day after tomorrow
+    },
+    { 
+      id: 5, 
+      text: 'Plan weekend trip', 
+      completed: false, 
+      important: false,
+      createdAt: new Date().toISOString(),
+      assignedTo: 'me',
+    },
+    { 
+      id: 6, 
+      text: 'Read a book', 
+      completed: true, 
+      important: false,
+      createdAt: new Date().toISOString(),
+    },
+    { 
+      id: 7, 
+      text: 'Clean the house', 
+      completed: true, 
+      important: false,
+      createdAt: new Date().toISOString(),
+    },
+    { 
+      id: 8, 
+      text: 'Prepare presentation', 
+      completed: true, 
+      important: false,
+      createdAt: new Date().toISOString(),
+      assignedTo: 'me',
+    },
+    { 
+      id: 9, 
+      text: 'Update blog', 
+      completed: true, 
+      important: false,
+      createdAt: new Date().toISOString(),
+      dueDate: new Date(Date.now() + 259200000).toISOString(), // 3 days from now
+    },
   ]);
   const [newTask, setNewTask] = useState('');
   const [selectedTask, setSelectedTask] = useState<number | null>(1);
+  const [currentPage, setCurrentPage] = useState<'all' | 'today' | 'important' | 'planned' | 'assigned'>('today');
 
   const pendingTasks = tasks.filter(task => !task.completed).length;
   const completedTasks = tasks.filter(task => task.completed).length;
@@ -178,6 +119,45 @@ function App() {
     setTasks(tasks.map(task => 
       task.id === id ? { ...task, important: !task.important } : task
     ));
+  };
+
+  const addTask = () => {
+    if (!newTask.trim()) return;
+    
+    const task: Task = {
+      id: Math.max(...tasks.map(t => t.id)) + 1,
+      text: newTask,
+      completed: false,
+      important: false,
+      createdAt: new Date().toISOString(),
+    };
+
+    setTasks([task, ...tasks]);
+    setNewTask('');
+  };
+
+  const renderCurrentPage = () => {
+    const props = {
+      tasks,
+      darkMode,
+      toggleTaskCompletion,
+      toggleImportant,
+      setSelectedTask,
+      selectedTask,
+    };
+
+    switch (currentPage) {
+      case 'all':
+        return <AllTasks {...props} />;
+      case 'important':
+        return <Important {...props} />;
+      case 'planned':
+        return <Planned {...props} />;
+      case 'assigned':
+        return <AssignedToMe {...props} />;
+      default:
+        return <AllTasks {...props} />;
+    }
   };
 
   return (
@@ -204,23 +184,68 @@ function App() {
 
             <nav>
               <ul className="space-y-2">
-                <li className={`p-2 rounded-lg flex items-center gap-2 ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}>
+                <li 
+                  onClick={() => setCurrentPage('all')}
+                  className={`p-2 rounded-lg flex items-center gap-2 cursor-pointer ${
+                    currentPage === 'all' 
+                      ? 'bg-green-600 text-white' 
+                      : darkMode 
+                        ? 'hover:bg-gray-700' 
+                        : 'hover:bg-gray-200'
+                  }`}
+                >
                   <ListTodo className="w-5 h-5" />
                   All Tasks
                 </li>
-                <li className={`p-2 rounded-lg flex items-center gap-2 bg-green-600 text-white`}>
+                <li 
+                  onClick={() => setCurrentPage('today')}
+                  className={`p-2 rounded-lg flex items-center gap-2 cursor-pointer ${
+                    currentPage === 'today' 
+                      ? 'bg-green-600 text-white' 
+                      : darkMode 
+                        ? 'hover:bg-gray-700' 
+                        : 'hover:bg-gray-200'
+                  }`}
+                >
                   <CalendarCheck className="w-5 h-5" />
                   Today
                 </li>
-                <li className={`p-2 rounded-lg flex items-center gap-2 ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}>
+                <li 
+                  onClick={() => setCurrentPage('important')}
+                  className={`p-2 rounded-lg flex items-center gap-2 cursor-pointer ${
+                    currentPage === 'important' 
+                      ? 'bg-green-600 text-white' 
+                      : darkMode 
+                        ? 'hover:bg-gray-700' 
+                        : 'hover:bg-gray-200'
+                  }`}
+                >
                   <StarIcon className="w-5 h-5" />
                   Important
                 </li>
-                <li className={`p-2 rounded-lg flex items-center gap-2 ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}>
+                <li 
+                  onClick={() => setCurrentPage('planned')}
+                  className={`p-2 rounded-lg flex items-center gap-2 cursor-pointer ${
+                    currentPage === 'planned' 
+                      ? 'bg-green-600 text-white' 
+                      : darkMode 
+                        ? 'hover:bg-gray-700' 
+                        : 'hover:bg-gray-200'
+                  }`}
+                >
                   <Calendar className="w-5 h-5" />
                   Planned
                 </li>
-                <li className={`p-2 rounded-lg flex items-center gap-2 ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}>
+                <li 
+                  onClick={() => setCurrentPage('assigned')}
+                  className={`p-2 rounded-lg flex items-center gap-2 cursor-pointer ${
+                    currentPage === 'assigned' 
+                      ? 'bg-green-600 text-white' 
+                      : darkMode 
+                        ? 'hover:bg-gray-700' 
+                        : 'hover:bg-gray-200'
+                  }`}
+                >
                   <Users className="w-5 h-5" />
                   Assigned to me
                 </li>
@@ -243,8 +268,8 @@ function App() {
               />
             </div>
             <div className="mt-2 text-sm">
-              <span>Pending</span>
-              <span className="float-right">Done</span>
+              <span>Pending ({pendingTasks})</span>
+              <span className="float-right">Done ({completedTasks})</span>
             </div>
           </div>
         </div>
@@ -269,6 +294,7 @@ function App() {
               className={`w-full bg-transparent outline-none ${darkMode ? 'placeholder-gray-400' : 'placeholder-gray-500'}`}
               value={newTask}
               onChange={(e) => setNewTask(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && addTask()}
             />
             <div className="flex justify-between items-center mt-4">
               <div className="flex gap-4">
@@ -276,90 +302,20 @@ function App() {
                 <button><Repeat className="w-5 h-5" /></button>
                 <button><Calendar className="w-5 h-5" /></button>
               </div>
-              <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+              <button 
+                onClick={addTask}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+              >
                 ADD TASK
               </button>
             </div>
           </div>
 
-          <div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-2">
-              {tasks.filter(task => !task.completed).map(task => (
-                <div 
-                  key={task.id} 
-                  className={`p-4 rounded-lg flex items-center justify-between cursor-pointer ${
-                    darkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-gray-50'
-                  } ${selectedTask === task.id ? 'ring-1 ring-green-500' : ''}`}
-                  onClick={() => setSelectedTask(task.id)}
-                >
-                  <div className="flex items-center gap-4">
-                    <input
-                      type="checkbox"
-                      checked={task.completed}
-                      onChange={(e) => {
-                        e.stopPropagation();
-                        toggleTaskCompletion(task.id);
-                      }}
-                      className="w-5 h-5 rounded-sm border-2 border-gray-300 checked:bg-green-600"
-                    />
-                    <span>{task.text}</span>
-                  </div>
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleImportant(task.id);
-                    }}
-                    className={`${task.important ? 'text-yellow-500' : ''} hover:text-yellow-500`}
-                  >
-                    <Star className="w-5 h-5" />
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            {completedTasks > 0 && (
-              <>
-                <h3 className="text-lg font-medium mt-8 mb-4">Completed</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-2">
-                  {tasks.filter(task => task.completed).map(task => (
-                    <div 
-                      key={task.id} 
-                      className={`p-4 rounded-lg flex items-center justify-between cursor-pointer ${
-                        darkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-gray-50'
-                      } ${selectedTask === task.id ? 'ring-1 ring-green-500' : ''}`}
-                      onClick={() => setSelectedTask(task.id)}
-                    >
-                      <div className="flex items-center gap-4">
-                        <input
-                          type="checkbox"
-                          checked={task.completed}
-                          onChange={(e) => {
-                            e.stopPropagation();
-                            toggleTaskCompletion(task.id);
-                          }}
-                          className="w-5 h-5 rounded-sm border-2 border-gray-300 checked:bg-green-600"
-                        />
-                        <span className="line-through text-gray-500">{task.text}</span>
-                      </div>
-                      <button 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleImportant(task.id);
-                        }}
-                        className={`${task.important ? 'text-yellow-500' : ''} hover:text-yellow-500`}
-                      >
-                        <Star className="w-5 h-5" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
+          {renderCurrentPage()}
         </div>
 
         {/* Right Sidebar */}
-        <div className={`w-full lg:w-72 p-4 relative ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+        <div className={`w-full lg:w-72 p-4 relative ${darkMode ? 'bg-gray-800' : 'bg-gray-50'} min-h-screen lg:min-h-0`}>
           {selectedTask && (
             <>
               <div className="flex items-center justify-between mb-4">
