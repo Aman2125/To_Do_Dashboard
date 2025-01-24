@@ -2,6 +2,10 @@
 
 A sleek and efficient Todo Dashboard built with ⚛️ React, ⚡ Vite, and 🛠️ TypeScript. This app helps you manage your tasks effortlessly with features like ✅ task creation, ✏️ editing, ❌ deletion, and 📊 tracking. Designed with a modern UI, it ensures a smooth user experience and optimized ⚙️ performance.  
 
+
+![Dashboard Preview](./src/Screenshot%202025-01-23%20204852.png) 
+
+
 ## 🚀 Features  
 - **Add Tasks**: Quickly create new tasks.  
 - **Edit Tasks**: Update task details with ease.  
